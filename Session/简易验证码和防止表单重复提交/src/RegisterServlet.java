@@ -14,6 +14,10 @@ public class RegisterServlet extends HttpServlet {
         response.setContentType("text/html;charset=utf-8");
         PrintWriter writer = response.getWriter();
 
+        //当验证码为中文或提交过来的数据中有中文时，记得解决乱码问题。
+        //注意：这里的UTF-8视情况而定，看客户端编码是什么就写什么。
+        request.setCharacterEncoding("UTF-8");
+
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("token") == null) {
             response.setStatus(500);
