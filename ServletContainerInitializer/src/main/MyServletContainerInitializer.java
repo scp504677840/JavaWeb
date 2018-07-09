@@ -1,9 +1,8 @@
 package main;
 
-import javax.servlet.ServletContainerInitializer;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
+import javax.servlet.*;
 import javax.servlet.annotation.HandlesTypes;
+import java.util.EnumSet;
 import java.util.Set;
 
 /**
@@ -21,10 +20,19 @@ public class MyServletContainerInitializer implements ServletContainerInitialize
      */
     @Override
     public void onStartup(Set<Class<?>> set, ServletContext servletContext) throws ServletException {
-        set.forEach(aClass -> {
-            System.out.println(aClass);
-        });
+        set.forEach(System.out::println);
         //class main.Student
         //class main.Worker
+
+        //注册Filter
+        FilterRegistration.Dynamic filter = servletContext.addFilter("myFilter", MyFilter.class);
+        filter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), true, "/*");
+
+        //注册Listener
+        servletContext.addListener(MyListener.class);
+
+        //注册Servlet
+        ServletRegistration.Dynamic servlet = servletContext.addServlet("myServlet", MyServlet.class);
+        servlet.addMapping("/hi");
     }
 }
